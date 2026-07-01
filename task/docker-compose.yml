@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  postgres-db:
+    image: postgres:15-alpine
+    container_name: task-manager
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # Persistencia de datos
+    networks:
+      - task-network
+
+  spring-app:
+    build: .
+    container_name: task-manager-app
+    ports:
+      - "8080:8080"
+    environment:
+      # OJO: Acá el host ya no es 'localhost', es el nombre del servicio de la DB en Docker!
+      DB_URL: ${DB_URL}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      FRONTEND_URL: ${FRONTEND_URL}
+    depends_on:
+      - postgres-db
+    networks:
+      - task-network
+
+
+volumes:
+  postgres_data: # Evita que se borren tus tareas al apagar el contenedor
+
+networks:
+  task-network:
