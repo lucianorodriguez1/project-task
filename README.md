@@ -12,6 +12,60 @@ Las funcionalidades son:
 
 ## Pasos para ejecutar el sistema
 
+### Prerequisitos
+Antes de empezar chequear si se tiene instalado:
+* Docker y Docker compose
+* Node
+* Git
+
+### Paso a paso
+1. Navegar a la ruta del back end
+```bash
+cd task
+```
+2. Creá un archivo llamado .env en la raíz de la carpeta `task` y configurá las variables de entorno necesarias:
+```.env
+PORT=8080
+DB_URL=jdbc:postgresql://postgres-db:5432/task-manager
+DB_NAME=task-manager
+DB_USER=user
+DB_PASSWORD=password
+FRONTEND_URL=http://localhost:5173
+```
+3. Levantar los servicios con Docker compose. Este comando descargará las imágenes, compilará la app mediante el Dockerfile de múltiples etapas y expondrá el backend:
+
+```bash
+docker compose up --build -d
+```
+
+4. Navegar a la ruta del front end desde el directorio raiz: 
+
+```bash
+cd task-front
+```
+5. Instalar dependencias
+
+```bash
+npm install
+```
+
+6. Crear un archivo .env
+
+```env
+VITE_API_URL=http://localhost:8080/api
+```
+7. Iniciar el servidor de desarrollo:
+``` bash
+npm run dev
+```
+
+Una vez completados los pasos, el frontend debería estar disponible en http://localhost:5173 comunicándose de forma transparente con el backend en el puerto 8080.
+
+Algunos comandos utiles son:
+* Apagar servicios del docker: `docker compose down` . 
+* Apagar borrando los datos de la DB: `docker compose down -v` (útil si reestructurás entidades y querés limpiar el volumen persistente).
+* 
+
 ## Decisiones tomadas.
 ### Con respecto al back-end: 
 * **Arquitectura basada en capas**: Por las pocas tareas a implementar se optó por usar ésta arquitectura ya que me permite **separar responsabilidades**.
@@ -103,3 +157,10 @@ Horas dedicadas actualmente:
 * Codigo fron end: 1 hora 30 minutos 
 
 Cabe aclarar que el codigo se desarrolló una vez se instalaron las dependencias para ambos proyectos, se preparó el docker-compose con la imagen de maven y la documentación se iba haciendo a la par del desarollo. Los servidores se escogieron al comienzo del desarrollo pero se puso en produccion una vez terminados los dos repositorios.
+
+Por último cabe aclarar que se eligieron servidores para que todo esté en producción pero por temas de tiempo se decidió entregarlo y no se llegó a desplegar.
+
+Lo elegido fue:
+* Render para el back
+* Vercel para el front
+* Supabase para PostgreSQL
